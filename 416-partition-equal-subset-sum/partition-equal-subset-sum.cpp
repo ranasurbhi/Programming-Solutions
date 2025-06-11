@@ -19,7 +19,8 @@ public:
 
         if((sum & 1 )== 1) return false;
         int n=nums.size();
+        sum/=2;
         vector<vector<int>> dp(n,vector<int>(sum+1,-1));
-        return helper(nums,sum/2,dp,0);
+        return helper(nums,sum,dp,0);
     }
 };
