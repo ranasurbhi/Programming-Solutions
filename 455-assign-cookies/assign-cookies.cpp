@@ -5,8 +5,8 @@ public:
         sort(s.begin(),s.end());
         // int count=0;
         int j=0;
-        for(int i=0;i<s.size();i++){
-            if(j<g.size() && s[i]>=g[j]){
+        for(int i=0;i<s.size() && j<g.size();i++){
+            if(s[i]>=g[j]){
                 // count++;
                 j++;
             }
