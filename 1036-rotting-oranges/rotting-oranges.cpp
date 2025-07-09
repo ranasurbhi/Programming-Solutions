@@ -1,61 +1,60 @@
 class Solution {
 public:
     int orangesRotting(vector<vector<int>>& grid) {
-        int count=0;
-        int rotten=0;
-        queue<pair<int,int>> q;
+        int freshOrange=0;
         int n=grid.size();
         int m=grid[0].size();
+        vector<vector<int>> v(n,vector<int>(m,0));
+        queue<pair<int,int>> q;
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
-                if(grid[i][j]==2){
+                if(grid[i][j]==1) freshOrange++;
+                else if(grid[i][j]==2){
                     q.push({i,j});
-                }
-                if(grid[i][j]==1){
-                    rotten++;
+                    v[i][j]=1;
                 }
             }
         }
-        if(rotten==0) return 0;
-        
+
+        if(!freshOrange) return 0;
+        int time=0;
         while(!q.empty()){
-            int s=q.size();
-            for(int ind=0;ind<s;ind++){
+            int sz = q.size();
+            for (int t = 0; t < sz; t++) {
                 pair<int,int> temp=q.front();
                 q.pop();
                 int i=temp.first;
                 int j=temp.second;
-                // up i-1 j
-                if(i-1>=0 && grid[i-1][j]==1){
+                // top i-1 j
+                if(i-1>=0 && v[i-1][j]==0 && grid[i-1][j]==1){
+                    v[i-1][j]=1;
                     q.push({i-1,j});
-                    grid[i-1][j]=2;
-                    rotten--;
+                    freshOrange--;
                 }
-                // down i+1 j
-                if(i+1<n && grid[i+1][j]==1){
+                // bottom i+1 j
+                if(i+1<n && v[i+1][j]==0 && grid[i+1][j]==1){
+                    v[i+1][j]=1;
                     q.push({i+1,j});
-                    grid[i+1][j]=2;
-                    rotten--;
+                    freshOrange--;
                 }
                 // left i j-1
-                if(j-1>=0 && grid[i][j-1]==1){
+                if(j-1>=0 && v[i][j-1]==0 && grid[i][j-1]==1){
+                    v[i][j-1]=1;
                     q.push({i,j-1});
-                    grid[i][j-1]=2;
-                    rotten--;
+                    freshOrange--;
                 }
                 // right i j+1
-                if(j+1<m && grid[i][j+1]==1){
+                if(j+1<m && v[i][j+1]==0 && grid[i][j+1]==1){
+                    v[i][j+1]=1;
                     q.push({i,j+1});
-                    grid[i][j+1]=2;
-                    rotten--;
+                    freshOrange--;
                 }
-
             }
-            count++;
+            time++;
         }
-        if(rotten!=0){
-            return -1;
-        }
-        return count-1;
+
+        if(freshOrange) return -1;
+        return time-1;
+        
     }
 };
