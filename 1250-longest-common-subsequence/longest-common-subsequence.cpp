@@ -1,21 +1,22 @@
 class Solution {
-    
-public:
-    int longestCommonSubsequence(string s1, string s2) {
-        int n=s1.size();
-        int m=s2.size();
-        vector<vector<int>> dp(n+1,vector<int> (m+1,0));
-        // return helper(text1, n-1, text2, m-1,dp);
-        for(int indx1=1;indx1<=n;indx1++){
-            for(int indx2=1;indx2<=m;indx2++){
-                if(s1[indx1-1]==s2[indx2-1]){
-                    dp[indx1][indx2]=1+dp[indx1-1][indx2-1];
-                }
-                else{
-                    dp[indx1][indx2]=max(dp[indx1-1][indx2],dp[indx1][indx2-1]);
-                }
-            }
+    int helper(string &text1, string &text2, int i,int j, int n,int m, vector<vector<int>>&dp){
+        if(i>=n || j>=m) return 0;
+
+        if(dp[i][j]!=-1) return dp[i][j];
+        // take
+        if(text1[i]==text2[j]) {
+            return dp[i][j]=1+helper(text1,text2,i+1,j+1,n,m,dp);
         }
-        return dp[n][m];
+
+        int first=helper(text1,text2,i+1,j,n,m,dp);
+        int second=helper(text1,text2,i,j+1,n,m,dp);
+        return dp[i][j]=max(first,second);
+    }
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int n=text1.size();
+        int m=text2.size();
+        vector<vector<int>> dp(n,vector<int>(m,-1));
+        return helper(text1,text2,0,0,n,m,dp);
     }
 };
