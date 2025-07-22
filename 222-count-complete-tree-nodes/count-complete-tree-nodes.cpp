@@ -10,16 +10,18 @@
  * };
  */
 class Solution {
-    void preorder(TreeNode* root, int &count){
-        if(!root) return;
+    void traversal(TreeNode* root, int& count){
+        if(!root){
+            return;
+        }
         count++;
-        preorder(root->left,count);
-        preorder(root->right,count);
+        traversal(root->left,count);
+        traversal(root->right,count);
     }
 public:
     int countNodes(TreeNode* root) {
         int count=0;
-        preorder(root,count);
+        traversal(root,count);
         return count;
     }
 };
