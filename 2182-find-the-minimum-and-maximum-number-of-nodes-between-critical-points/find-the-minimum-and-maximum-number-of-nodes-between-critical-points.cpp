@@ -37,7 +37,7 @@ public:
             // cout<<ans[i]<<" ";
             mini=min(mini,ans[i+1]-ans[i]);
         }
-        if(n-1>0) cout<<ans[n-1]<<" ";
+        // if(n-1>0) cout<<ans[n-1]<<" ";
         if(n<=1) return{-1,-1};
         return {mini,ans[n-1]-ans[0]};
     }
