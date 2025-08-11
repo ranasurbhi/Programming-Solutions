@@ -1,37 +1,24 @@
 class Solution {
-    bool dfs(int n,vector<int>&v,vector<int>  &recStack,vector<vector<int>> &adj,int i){
-        v[i]=1;
-        recStack[i]=1;
-        for(int it:adj[i]){
-            if(recStack[it]){
-                return true;
-            }
-            else if(!v[it] && dfs(n,v,recStack,adj,it)){
-                return true;
-            }
+    bool iscycle(vector<vector<int>>& graph, unordered_set<int> &st, int i,vector<int>&dp){
+        if(dp[i]!=-1) return dp[i];
+        st.insert(i);
+        bool res=false;
+        
+        for(int it:graph[i]){
+            if(st.count(it)) return true;
+            res=res || iscycle(graph,st,it,dp);
         }
-        recStack[i]=0;
-        return false;
+        st.erase(i);
+        return dp[i]=res;
     }
 public:
-    vector<int> eventualSafeNodes(vector<vector<int>>& preReq) {
-        int n=preReq.size();
-        vector<int> v(n,0);
-        vector<int>  recStack(n,0);
-        vector<vector<int>> adj(n);
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
         vector<int> ans;
-        // for(auto it:preReq){
-        //     adj[it[1]].push_back(it[0]);
-        // }
-        for(int i=0;i<n;i++){
-            for(int it:preReq[i]){
-                adj[i].push_back(it);
-            }
-        }
-        for(int i=0;i<n;i++){
-            if(!dfs(n,v,recStack,adj,i)){
-                ans.push_back(i);
-            }
+        unordered_set<int> st;
+
+        vector<int> dp(graph.size(),-1);
+        for(int i=0;i<graph.size();i++){
+            if(!iscycle(graph,st,i,dp)) ans.push_back(i);
         }
         return ans;
     }
