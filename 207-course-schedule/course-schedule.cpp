@@ -1,31 +1,41 @@
 class Solution {
-    bool dfs(int n,vector<int>&v,vector<int>  &recStack,vector<vector<int>> &adj,int i){
-        v[i]=1;
-        recStack[i]=1;
-        for(int it:adj[i]){
-            if(recStack[it]){
-                return true;
+    bool dfs(vector<vector<int>> &adj, set<int> &st, vector<int> &vis,int &i){
+        vis[i]=1;
+        st.insert(i);
+        int s=adj[i].size();
+        bool res=false;
+        for(int j=0;j<s;j++){
+            if(!vis[adj[i][j]]){
+                res=res || dfs(adj,st,vis,adj[i][j]);
             }
-            else if(!v[it] && dfs(n,v,recStack,adj,it)){
+            else if(st.count(adj[i][j])){
                 return true;
             }
         }
-        recStack[i]=0;
-        return false;
+        // vis[i]=0;
+        st.erase(i);
+        return res;
     }
 public:
-    bool canFinish(int n, vector<vector<int>>& preReq) {
-        vector<int> v(n,0);
-        vector<int>  recStack(n,0);
-        vector<vector<int>> adj(n);
-        for(auto it:preReq){
-            adj[it[1]].push_back(it[0]);
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        // graph 
+        vector<vector<int>> adj(numCourses);
+        for(auto p:prerequisites){
+            adj[p[1]].push_back(p[0]);
         }
-        for(int i=0;i<n;i++){
-            if(v[i]==0 && dfs(n,v,recStack,adj,i)){
-                return false;
+
+        vector<int> vis(numCourses,0);
+        
+        // cycle detect
+        bool res=false;
+        set<int> st;
+        for(int i=0;i<numCourses;i++){
+            if(!vis[i]){
+                res=res || dfs(adj,st,vis,i);
+                // vis[i]=1;
             }
+
         }
-        return true;
+        return !res;
     }
 };
