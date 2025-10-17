@@ -1,22 +1,13 @@
 class Solution {
-    int helper(int n,int indx,vector<int> &dp){
-        if(indx>n){
-            return 0;
-        }
-        if(indx==n){
-            return 1;
-        }
-        if(dp[indx]!=-1){
-            return dp[indx];
-        }
-
-        int one=helper(n,indx+1,dp);
-        int two=helper(n,indx+2,dp);
-        return dp[indx]=one+two;
+    int helper(int n, int i,vector<int>& dp){
+        if(i==n) return 1;
+        if(i>n) return 0;
+        if(dp[i]!=-1) return dp[i];
+        return dp[i]=helper(n,i+1,dp)+helper(n,i+2,dp);
     }
 public:
     int climbStairs(int n) {
-        vector<int> dp(n,-1);
+        vector<int> dp(n+1,-1);
         return helper(n,0,dp);
     }
 };
