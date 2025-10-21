@@ -1,34 +1,33 @@
 class Solution {
-    int rob2(vector<int>& nums) {
-        int n=nums.size();
-        if(n==0) return 0;
-        vector<int> dp(n,-1);
-        dp[0]=nums[0];
-        for(int i=1;i<n;i++){
-            
-            int pick=nums[i]; if (i>1) pick+=dp[i-2];
-            int notPick=dp[i-1];
-            dp[i]=max(pick,notPick);
-
-        }
-        return dp[n-1];
-    }
-public:
-    int rob(vector<int>& nums){
-        int n=nums.size();
-        vector<int> temp1,temp2;
-        for(int i=0;i<n;i++){
-            if (i==0) 
-                temp1.push_back(nums[0]);
-            else if(i==n-1){
-                temp2.push_back(nums[n-1]);
+    int helper(vector<int>& nums,int i,vector<vector<int>>& dp, int lastRobbed){
+        if(i<0) return 0;
+        
+        if(dp[i][lastRobbed]!=-1) return dp[i][lastRobbed];
+        int take=0, nottake=0;
+        if(i==0){
+            if(lastRobbed) {
+                return 0;
             }
             else{
-                temp1.push_back(nums[i]);
-                temp2.push_back(nums[i]);
+                return nums[i];
             }
-            
+
         }
-        return max(rob2(temp1),rob2(temp2));
+        else if(i==nums.size()-1){
+            take=helper(nums,i-2,dp,1)+nums[i];
+            nottake=helper(nums,i-1,dp,0);
+        }
+        else{
+            take=helper(nums,i-2,dp,lastRobbed)+nums[i];
+            nottake=helper(nums,i-1,dp,lastRobbed);
+        }
+        
+        return dp[i][lastRobbed]=max(take,nottake);
+    }
+public:
+    int rob(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<int>> dp(n, vector<int>(2,-1));
+        return helper(nums,n-1,dp,0);
     }
 };
