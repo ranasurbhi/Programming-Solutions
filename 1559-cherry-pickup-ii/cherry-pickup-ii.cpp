@@ -1,40 +1,29 @@
 class Solution {
-    int helper(int i, int j1, int j2, int r , int c, vector<vector<int>>& grid,vector<vector<vector<int>>> &dp){
-        if(j1 < 0 || j1 >= c || j2 < 0 || j2 >= c){
-            return -1;
-        }
-
-        if(dp[i][j1][j2]!=-1){
-            return dp[i][j1][j2];
-        }
-
-        if(i==r-1){
-            if(j1==j2) return grid[i][j1];
-            else return grid[i][j1] + grid[i][j2];
-
-        }
+    int helper(vector<vector<int>>& grid, int x, int i, int j, int n, int m,vector<vector<vector<int>>>& dp){
+        if(j<0 || j>=m || i<0 || i>=m) return -1e8;
         
-        int maxi=-1;
-        for (int k1=-1; k1<=1;k1++){
-            for (int k2=-1; k2<=1 ; k2++){
-                int value=0;
-                if(j1==j2){
-                    value=grid[i][j1] + helper(i+1,j1+k1,j2+k2,r,c,grid,dp);
-                }
-                else{
-                    value=grid[i][j1]+grid[i][j2] + helper(i+1,j1+k1,j2+k2,r,c,grid,dp);
-                }
-                maxi=max(maxi,value);
-            }
-            
+        if(x==n-1) {
+            if(i==j) return grid[x][i];
+            else return grid[x][i]+grid[x][j];
         }
-        return dp[i][j1][j2]=maxi;
-    }
 
+        if(dp[x][i][j]!=-1) return dp[x][i][j];
+        int ans=-1e8;
+        for(int k=-1;k<2;k++){
+            ans=max(ans,helper(grid,x+1,i-1,j+k,n,m,dp));
+            ans=max(ans,helper(grid,x+1,i,j+k,n,m,dp));
+            ans=max(ans,helper(grid,x+1,i+1,j+k,n,m,dp));
+        }
+
+        if(i==j) ans+=grid[x][i];
+        else ans+=grid[x][i]+grid[x][j];
+        return dp[x][i][j]=ans;
+    }
 public:
     int cherryPickup(vector<vector<int>>& grid) {
-        int r=grid.size(), c=grid[0].size();
-        vector<vector<vector<int>>> dp(r, vector<vector<int>>(c, vector<int>(c, -1)));
-        return helper(0,0,c-1,r,c,grid,dp);
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<vector<int>>> dp(n+1,vector<vector<int>>(m+1,vector<int>(m+1,-1)));
+        return helper(grid,0,0,m-1,n,m,dp);
     }
 };
