@@ -1,35 +1,23 @@
 class Solution {
-    int helper(vector<int> &nums, int i, int n, int last,vector<vector<int>> &dp){
-        if(i>=n){
-            return 0;
+    int helper(vector<int>& nums, int i, int lelement, vector<vector<int>>& dp) {
+        int n = nums.size();
+        if (i >= n) return 0;                       // return 0 (length from here)
+        if (dp[i][lelement + 1] != -1) return dp[i][lelement + 1];
+
+        int take = 0;
+        if (lelement == -1 || nums[lelement] < nums[i]) {
+            take = 1 + helper(nums, i + 1, i, dp);  // include nums[i] -> +1
         }
-        if(dp[i][last+1]!=-1) return dp[i][last+1];
-        // take
-        int take=0;
-        if(last==-1 || nums[i]>nums[last]){
-            take= 1 + helper(nums,i+1,n,i,dp);
-        }
-        // nottake
-        int nottake=helper(nums,i+1,n,last,dp);
-        return dp[i][last+1]=max(take,nottake);
+        int ntake = helper(nums, i + 1, lelement, dp); // skip nums[i]
+
+        return dp[i][lelement + 1] = max(take, ntake);
     }
+
 public:
     int lengthOfLIS(vector<int>& nums) {
-        int n=nums.size();
-        vector<vector<int>> dp(n+1,vector<int> (n+1,0));
-
-        for(int i=n-1;i>=0;i--){
-            for(int last=i-1;last>=-1;last--){
-                int nottake=dp[i+1][last+1];
-
-                int take=0;
-                if(last==-1 || nums[i]>nums[last]){
-                    take= 1 + dp[i+1][i+1];
-                }
-                dp[i][last+1]=max(take,nottake);
-            }
-        }
-        // return helper(nums,0,n,-1,dp);
-        return dp[0][0];
+        int n = nums.size();
+        if (n == 0) return 0;
+        vector<vector<int>> dp(n, vector<int>(n + 1, -1)); // dp[i][prevIndex+1]
+        return helper(nums, 0, -1, dp);
     }
 };
